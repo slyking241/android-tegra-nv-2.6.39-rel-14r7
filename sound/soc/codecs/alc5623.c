@@ -706,9 +706,9 @@ static int alc5623_set_dai_fmt(struct snd_soc_dai *codec_dai,
 		return -EINVAL;
 	}
 
-#ifdef CONFIG_ALC_SWAP_CHANNELS
+//#ifdef CONFIG_ALC_SWAP_CHANNELS
 	iface |= ALC5623_DAI_DAC_DATA_L_R_SWAP;
-#endif
+//#endif
 
 	return snd_soc_write(codec, ALC5623_DAI_CONTROL, iface);
 }
@@ -804,7 +804,7 @@ static void enable_power_depop(struct snd_soc_codec *codec)
 
 	snd_soc_update_bits(codec, ALC5623_MISC_CTRL, 
 			   ALC5623_MISC_AUXOUT_DEPOP_MODE1_EN,
-                           ALC5623_MISC_AUXOUT_DEPOP_MODE1_EN);
+               ALC5623_MISC_AUXOUT_DEPOP_MODE1_EN);
 
 	msleep(500);
 

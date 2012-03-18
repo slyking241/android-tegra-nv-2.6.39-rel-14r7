@@ -157,7 +157,7 @@ static struct regulator_consumer_supply tps658621_ldo4_supply[] = { /* VDD IO VI
 
 /*unused*/
 static struct regulator_consumer_supply tps658621_ldo5_supply[] = {
-	REGULATOR_SUPPLY("vdd ld5", NULL)
+	REGULATOR_SUPPLY("vdd ldo5", NULL)
 };
 
 /* VDAC voltage rail : AVDD_VDAC -> LDO6

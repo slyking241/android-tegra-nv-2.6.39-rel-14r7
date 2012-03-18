@@ -24,15 +24,19 @@
 /* GPS and Magnetic sensor share the same enabling IO line */
 #define SMBA1002_GPSMAG_DISABLE  	TEGRA_GPIO_PV3 	/* 0= disabled */
 #define SMBA1002_3G_DISABLE		TEGRA_GPIO_PJ2 /* 0 = disabled */
-#define SMBA1002_KEY_VOLUMEUP 		TEGRA_GPIO_PV4 	/* 0=pressed */
-#define SMBA1002_KEY_VOLUMEDOWN 	TEGRA_GPIO_PD4 	/* 0=pressed */
+#define SMBA1002_KEY_VOLUMEUP 		TEGRA_GPIO_PD4 	/* 0=pressed */
+#define SMBA1002_KEY_VOLUMEDOWN 	TEGRA_GPIO_PV4 	/* 0=pressed */
 #define SMBA1002_KEY_POWER 		TEGRA_GPIO_PV2 	/* 0=pressed */
-#define SMBA1002_KEY_BACK		TEGRA_GPIO_PH0	/* 0=pressed */
+//#define SMBA1002_KEY_BACK		TEGRA_GPIO_PH0	/* 0=pressed */
 
 /* #define SMBA1002_EMC_SAMSUNG		*/
 /* #define SMBA1002_EMC_ELPIDA50NM	*/
 /* #define SMBA1002_EMC_ELPIDA40NM	*/
 #define TEGRA_GPIO_ISL29023_IRQ TEGRA_GPIO_PV5
+
+#define	SMBA1002_ACCEL_INT		TEGRA_GPIO_PJ0
+#define	SMBA1002_INT_LIGHTSENS	TEGRA_GPIO_PV5
+#define	SMBA1002_CAP_INT		TEGRA_GPIO_PV6
 
 #define SMBA1002_CAMERA_POWER 	TEGRA_GPIO_PBB5 /* 1=powered on */
 //#define SMBA1002_CAMERA_ROTATION	TEGRA_GPIO_PX7
@@ -116,6 +120,7 @@
 #define SMBA1002_USB1_RESET		TEGRA_GPIO_PV1	/* 0= reset */
 
 #define SMBA1002_HP_DETECT	TEGRA_GPIO_PW2 	/* HeadPhone detect for audio codec: 1=Hedphone plugged */
+#define SMBA1002_INT_MIC_EN	TEGRA_GPIO_PX0
 
 #define SMBA1002_NVEC_REQ	TEGRA_GPIO_PD0	/* Set to 0 to send a command to the NVidia Embedded controller */
 #define SMBA1002_NVEC_I2C_ADDR 0x8a 			/* I2C address of Tegra, when acting as I2C slave */
@@ -128,9 +133,9 @@
 /* The switch used to indicate rotation lock */
 //#define SW_ROTATION_LOCK 	(SW_MAX-1)
 
-extern void smba1002_gps_mag_poweron(void);
-extern void smba1002_gps_mag_poweroff(void);
-extern void smba1002_gps_mag_init(void);
+//extern void smba1002_gps_mag_poweron(void);
+//extern void smba1002_gps_mag_poweroff(void);
+//extern void smba1002_gps_mag_init(void);
 extern int smba1002_bt_wifi_gpio_set(bool on);
 extern int smba1002_bt_wifi_gpio_init(void);
 
@@ -155,13 +160,13 @@ extern int smba1002_touch_register_devices(void);
 extern int smba1002_sdhci_register_devices(void);
 extern int smba1002_sensors_register_devices(void);
 extern int smba1002_wlan_pm_register_devices(void);
-extern int smba1002_gps_pm_register_devices(void);
-extern int smba1002_gsm_pm_register_devices(void);
+//extern int smba1002_gps_pm_register_devices(void);
+//extern int smba1002_gsm_pm_register_devices(void);
 //extern int smba1002_bt_pm_register_devices(void);
 extern void smba1002_setup_bluesleep(void);
 extern void smba1002_bt_rfkill(void);
 extern int smba1002_nand_register_devices(void);
-extern int smba1002_camera_register_devices(void);
+//extern int smba1002_camera_register_devices(void);
 
 /* Autocalculate framebuffer sizes */
 

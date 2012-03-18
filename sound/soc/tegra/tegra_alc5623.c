@@ -31,7 +31,6 @@
  */
 
 #include <asm/mach-types.h>
-
 #include <linux/delay.h>
 #include <linux/module.h>
 #include <linux/platform_device.h>
@@ -282,7 +281,7 @@ static int tegra_alc5623_event_int_spk(struct snd_soc_dapm_widget *w,
 	else {
 
 		// External Amp GPIO
-        	snd_soc_update_bits(codec, ALC5623_GPIO_OUTPUT_PIN_CTRL,
+        snd_soc_update_bits(codec, ALC5623_GPIO_OUTPUT_PIN_CTRL,
                 	        ALC5623_GPIO_OUTPUT_GPIO_OUT_STATUS,
                         	(!!SND_SOC_DAPM_EVENT_ON(event))*ALC5623_GPIO_OUTPUT_GPIO_OUT_STATUS);
 
@@ -290,6 +289,7 @@ static int tegra_alc5623_event_int_spk(struct snd_soc_dapm_widget *w,
 		snd_soc_update_bits(codec, ALC5623_PWR_MANAG_ADD1,
         	                ALC5623_PWR_ADD1_AUX_OUT_AMP,
                 	        (!!SND_SOC_DAPM_EVENT_ON(event))*ALC5623_PWR_ADD1_AUX_OUT_AMP);
+
 	}
 
 	if (!(machine->gpio_requested & GPIO_SPKR_EN)) {
@@ -325,6 +325,7 @@ static int tegra_alc5623_event_int_mic(struct snd_soc_dapm_widget *w,
 {
         struct snd_soc_dapm_context *dapm = w->dapm;
         struct snd_soc_card *card = dapm->card;
+		struct snd_soc_codec *codec = dapm->codec;
         struct tegra_alc5623 *machine = snd_soc_card_get_drvdata(card);
         struct tegra_alc5623_platform_data *pdata = machine->pdata;
 
@@ -337,6 +338,15 @@ static int tegra_alc5623_event_int_mic(struct snd_soc_dapm_widget *w,
 
         if (!(machine->gpio_requested & GPIO_INT_MIC_EN))
                 return 0;
+// Enables the mic differntial control
+//        snd_soc_update_bits(codec, ALC5623_MIC_ROUTING_CTRL,
+//                        (1 << 12),
+//			    (!!SND_SOC_DAPM_EVENT_ON(event))*(1<<12));
+
+// Mic Bias
+//  snd_soc_update_bits(codec, ALC5623_PWR_MANAG_ADD1,
+//      (1 << 11),
+//        (!!SND_SOC_DAPM_EVENT_ON(event))*(1<<11));
 
         gpio_set_value_cansleep(pdata->gpio_int_mic_en,
                                 SND_SOC_DAPM_EVENT_ON(event));
@@ -351,15 +361,15 @@ static const struct snd_soc_dapm_widget dapm_widgets[] = {
 	SND_SOC_DAPM_PRE("Channel Swap Detect", tegra_alc5623_event_pre_channel),
 	SND_SOC_DAPM_SPK("Int Spk", tegra_alc5623_event_int_spk),
 	SND_SOC_DAPM_HP("Headphone Jack", NULL),
-	SND_SOC_DAPM_MIC("Int Mic", NULL),
+	SND_SOC_DAPM_MIC("Int Mic", tegra_alc5623_event_int_mic),
 	SND_SOC_DAPM_LINE("FM Radio", NULL),
 };
 
 static const struct snd_soc_dapm_route audio_map[] = {
-	{"Headphone Jack", NULL, "HPR"},
 	{"Headphone Jack", NULL, "HPL"},
-	{"Int Spk", NULL, "AUXOUTR"},
+	{"Headphone Jack", NULL, "HPR"},
 	{"Int Spk", NULL, "AUXOUTL"},
+	{"Int Spk", NULL, "AUXOUTR"},	
 	{"Mic Bias1", NULL, "Int Mic"},
 	{"MIC1", NULL, "Mic Bias1"},
 	{"AUXINR", NULL, "FM Radio"},
@@ -372,6 +382,7 @@ static const struct snd_kcontrol_new controls[] = {
 	SOC_DAPM_PIN_SWITCH("Headphone Jack"),
 	SOC_DAPM_PIN_SWITCH("Int Mic"),
 	SOC_DAPM_PIN_SWITCH("FM"),
+	SOC_DAPM_PIN_SWITCH("Mic Bias1"),
 };
 
 static const char* nc_pins[] = {

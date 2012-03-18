@@ -62,8 +62,12 @@
    this table ! */
 static __initdata struct tegra_clk_init_table smba1002_clk_init_table[] = {
 /* name parent rate enabled */
-{ "pll_m", NULL, 0, false},
+{ "pll_m", NULL, 0, true},
 { "clk_32k", NULL, 32768, true}, /* always on */
+
+/* Master clock */
+{ "clk_m",		NULL,		 	  0,	true},
+
 { "rtc", "clk_32k", 32768, true}, /* rtc-tegra : must be always on */
 { "blink", "clk_32k", 32768, false}, /* used for bluetooth */
 { "sdmmc1", "pll_p", 48000000, false}, /* sdhci-tegra.1 */
@@ -137,7 +141,10 @@ That is why we are setting it to NULL */
 // { CDEV1, NULL /*"pll_a_out0"*/,11289600, false}, /* used as audio CODEC MCLK */
         { CDEV1, NULL /*"pll_a_out0"*/,0, true}, /* used as audio CODEC MCLK */
 # endif
-
+    { "i2c1", "clk_m", 0, false}, /* tegra-i2c.0 */
+    { "i2c2", "clk_m", 0, false}, /* tegra-i2c.1 */
+    { "i2c3", "clk_m", 0, false}, /* tegra-i2c.2 */
+    { "dvc", "clk_m",  0, false}, /* tegra-i2c.3 */
 { NULL, NULL, 0, 0},
 
 };

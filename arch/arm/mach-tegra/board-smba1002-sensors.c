@@ -30,11 +30,21 @@
 #include "gpio-names.h"
 #include "cpu-tegra.h"
 
+static struct bq20z75_platform_data smba1002_bq20z75_pdata = {
+	.battery_detect = TEGRA_GPIO_PH2,
+	.battery_detect_present = 1,
+	.i2c_retry_count = 5,
+};
 static struct i2c_board_info __initdata smba1002_i2c_bus0_sensor_info[] = {
 	{
 		I2C_BOARD_INFO("bq20z75-battery", 0x0B),
 		.irq = TEGRA_GPIO_TO_IRQ(TEGRA_GPIO_PH2),
+		.platform_data = &smba1002_bq20z75_pdata,
 	},
+
+};
+
+static struct i2c_board_info __initdata smba1002_i2c_bus2_sensor_info[] = {
 	{
 		I2C_BOARD_INFO("so340010_kbd", 0x2c),
 		.irq = TEGRA_GPIO_TO_IRQ(TEGRA_GPIO_PV6),
@@ -48,9 +58,7 @@ static struct i2c_board_info __initdata smba1002_i2c_bus0_sensor_info[] = {
 		.irq = TEGRA_GPIO_TO_IRQ(TEGRA_GPIO_PV5),
 
 	},   
-};
 
-static struct i2c_board_info __initdata smba1002_i2c_bus3_sensor_info[] = {
 	
 };
 
@@ -102,6 +110,6 @@ int __init smba1002_sensors_register_devices(void)
 	                        ARRAY_SIZE(smba1002_i2c_bus0_sensor_info));
 	i2c_register_board_info(4, smba1002_i2c_bus4_sensor_info,
 	                        ARRAY_SIZE(smba1002_i2c_bus4_sensor_info));
-	return i2c_register_board_info(3, smba1002_i2c_bus3_sensor_info,
-	                               ARRAY_SIZE(smba1002_i2c_bus3_sensor_info));
+	return i2c_register_board_info(2, smba1002_i2c_bus2_sensor_info,
+	                               ARRAY_SIZE(smba1002_i2c_bus2_sensor_info));
 }

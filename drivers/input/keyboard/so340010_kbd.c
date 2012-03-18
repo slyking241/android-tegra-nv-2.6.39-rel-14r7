@@ -106,10 +106,11 @@ struct so340010_kbd_info {
 };
 
 static struct so340010_kbd_info key_table[] = {
-	{ 0x0008, KEY_BACK },
+    { 0x0008, KEY_SEARCH },
 	{ 0x0004, KEY_MENU },
-	{ 0x0002, KEY_HOMEPAGE },
-	{ 0x0001, KEY_SEARCH },
+	{ 0x0002, KEY_BACK },
+	{ 0x0001, KEY_HOMEPAGE },
+
 };
 
 static int key_num = sizeof(key_table)/sizeof(key_table[0]);
@@ -185,7 +186,7 @@ static int so340010_i2c_read(struct so340010_kbd_dev *dev, unsigned short reg_st
 
 	msgs[0].addr = dev->client->addr;
 	msgs[0].len = 2;
-	msgs[0].buf = &reg_buffer;
+	msgs[0].buf = reg_buffer;
 	msgs[0].flags = 0;
 	
 	msgs[1].addr = dev->client->addr;
@@ -384,7 +385,7 @@ static void so340010_timer_func(unsigned long __dev)
 static void so340010_work_func(struct work_struct *work)
 {
 	int i, ret;
-	unsigned int gpio_val, button_val;
+	unsigned short gpio_val, button_val;
 	struct so340010_kbd_dev *dev;
 
 	dev = (struct so340010_kbd_dev *)container_of(work, struct so340010_kbd_dev, work);
@@ -540,16 +541,18 @@ static int so340010_kbd_probe(struct i2c_client *client,
 	}
 
 	INIT_WORK(&dev->work, so340010_work_func);
+	
+
+
 	if (so340010_reset(dev)) {
 		logd(TAG "so340010_kbd_probe so340010_reset fail \r\n");
 		goto failed_reset_hardware;
 	}
-
-	if(request_threaded_irq(client->irq, NULL, so340010_irq_callback, IRQF_TRIGGER_FALLING, 
+    if(request_threaded_irq(client->irq, NULL, so340010_irq_callback, IRQF_TRIGGER_FALLING, 
 			"so340010_kbd", dev))
 		goto failed_enable_irq;
-
-
+		
+		
 #if (__SO340010_GENERIC_DEBUG__)
 	if (device_create_file(&client->dev, &dev_attr_debug)
 		|| device_create_file(&client->dev, &dev_attr_intr)
