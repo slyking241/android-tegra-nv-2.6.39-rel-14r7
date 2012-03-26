@@ -25,6 +25,7 @@
 #include <linux/console.h>
 #include <linux/regulator/machine.h>
 #include <linux/regulator/fixed.h>
+#include <linux/leds-regulator.h>
 //#include <linux/regulator/virtual_adj.h>
 #include <linux/regulator/consumer.h>
 #include <linux/mfd/tps6586x.h>
@@ -195,6 +196,14 @@ static struct regulator_consumer_supply tps658621_rtc_supply[] = {
 	REGULATOR_SUPPLY("vdd_rtc_2", NULL)
 };
 
+static struct regulator_consumer_supply tps658621_led_supply[] = {  /* Blue LED on RGB1 = Hannspad WLAN LED */
+	REGULATOR_SUPPLY("vled", "leds-regulator.0")
+};
+
+static struct regulator_consumer_supply tps658621_iled_supply[] = {  /* sets flash mode for Hannspad WLAN LED */
+	REGULATOR_SUPPLY("i_led", NULL)
+};
+
 /* unused */
 /*static struct regulator_consumer_supply tps658621_buck_supply[] = {
 	REGULATOR_SUPPLY("pll_e", NULL),
@@ -262,6 +271,7 @@ static struct regulator_consumer_supply fixed_vdd_aon_supply[] = {
 		.consumer_supplies = tps658621_##_id##_supply,	\
 	}
 
+
 #define FIXED_REGULATOR_INIT(_id, _mv, _aon, _bon)		\
 	{													\
 		.constraints = {								\
@@ -306,10 +316,15 @@ static struct regulator_init_data ldo9_data
 	= ADJ_REGULATOR_INIT(ldo9,1250, 3300, 1, 1); // 2850
 static struct regulator_init_data rtc_data  		 
 	= ADJ_REGULATOR_INIT(rtc, 1250, 3350, 1, 1); // 3300
-/*static struct regulator_init_data buck_data 
-	= ADJ_REGULATOR_INIT(buck,1250, 3350, 0, 0); // 3300*/
+//static struct regulator_init_data buck_data 
+//	= ADJ_REGULATOR_INIT(buck,1250, 3350, 0, 0); // 3300
 
-static struct regulator_init_data soc_data  		 
+static struct regulator_init_data led_data 		 
+	= ADJ_REGULATOR_INIT(led, 1, 31, 0, 1);   // Hannspad WLAN LED brightness (PWM, 0-31)
+static struct regulator_init_data iled_data 		 
+	= ADJ_REGULATOR_INIT(iled, 15, 15, 1, 1);  // (ab)used for setting flashing period (15=always on)
+
+static struct regulator_init_data soc_data 		 
 	= ADJ_REGULATOR_INIT(soc, 1250, 3300, 1, 1);
 	static struct regulator_init_data ldo_tps74201_data  
 	= FIXED_REGULATOR_INIT(ldo_tps74201 , 1500, 0, 0 ); // 1500 (VDD1.5, enabled by PMU_GPIO[0] (0=enabled) - Turn it off as soon as we boot
@@ -391,6 +406,12 @@ static struct fixed_voltage_config ldo_tps2051B_cfg
 		.platform_data = _data,			\
 	} 	
 
+static struct led_regulator_platform_data wifi_led_data = {
+		.name = "wifi",
+		.brightness = LED_OFF
+};
+
+
 /* FIXME: do we have rtc alarm irq? */
 static struct tps6586x_rtc_platform_data smba1002_rtc_data = {
 	.irq	= TEGRA_NR_IRQS + TPS6586X_INT_RTC_ALM1,
@@ -416,6 +437,8 @@ static struct tps6586x_subdev_info tps_devs[] = {
 	TPS_ADJ_REG(LDO_7, &ldo7_data),
 	TPS_ADJ_REG(LDO_8, &ldo8_data),
 	TPS_ADJ_REG(LDO_9, &ldo9_data),
+	TPS_ADJ_REG(LDO_LEDB1, &led_data),
+	TPS_ADJ_REG(LDO_ILED, &iled_data),	
 	//TPS_ADJ_REG(LDO_RTC, &rtc_data),
 	//TPS_ADJ_REG(LDO_SOC, &soc_data),
 	//TPS_GPIO_FIX_REG(0, &ldo_tps74201_cfg),
@@ -686,6 +709,16 @@ struct platform_device tegra_rtc_device = {
 	.resource	= tegra_rtc_resources,
 	.num_resources	= ARRAY_SIZE(tegra_rtc_resources),
 };
+
+struct platform_device regulator_led_device = {
+	.name		= "leds-regulator",
+	.id		= 0,
+	.dev		= {
+			   .platform_data = &wifi_led_data,
+			  },
+};
+
+
 #endif
 
 static struct platform_device *smba1002_power_devices[] __initdata = {
@@ -699,6 +732,7 @@ static struct platform_device *smba1002_power_devices[] __initdata = {
 	//&smba1002_nvec_mfd,
 	&tegra_rtc_device,
 	//&smba1002_bq24610_device,
+	&regulator_led_device,
 };
 
 /* Init power management unit of Tegra2 */

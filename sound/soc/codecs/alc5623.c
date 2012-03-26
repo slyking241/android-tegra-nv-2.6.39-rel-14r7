@@ -707,7 +707,7 @@ static int alc5623_set_dai_fmt(struct snd_soc_dai *codec_dai,
 	}
 
 //#ifdef CONFIG_ALC_SWAP_CHANNELS
-	iface |= ALC5623_DAI_DAC_DATA_L_R_SWAP;
+//	iface |= ALC5623_DAI_DAC_DATA_L_R_SWAP;
 //#endif
 
 	return snd_soc_write(codec, ALC5623_DAI_CONTROL, iface);

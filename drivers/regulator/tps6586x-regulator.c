@@ -53,6 +53,11 @@
 #define TPS6586X_SUPPLYV6	0x46
 #define TPS6586X_SMODE1		0x47
 #define TPS6586X_SMODE2		0x48
+/* RGB LED Driver 1 */
+#define TPS6586X_SUPPLYFLASH	0x50 /* RGB1 Flash timing - 31 = always on */
+#define TPS6586X_SUPPLYIRED	0x51 /* Red LED register (current limiter values already set by bootloader)*/
+#define TPS6586X_SUPPLYLEDG1	0x52 /* Green LED register bit 7 enables RGB1 */
+#define TPS6586X_LEDB1		0x53 /* Blue LED = WLAN LED on the Hannspad   */
 
 struct tps6586x_regulator {
 	struct regulator_desc desc;
@@ -243,6 +248,21 @@ static int tps6586x_dvm_voltages[] = {
 	1325, 1350, 1375, 1400, 1425, 1450, 1475, 1500,
 };
 
+static int tps6586x_led_voltages[] = {
+	   1,    1,    2,    3,    4,    5,    6,    7, /*  Zero not allowed  */
+	   8,    9,   10,   11,   12,   13,   14,   15,
+	  16,   17,   18,   19  , 20,   21,   22,   23,
+	  24,   25,   26,   27,   28,   29,   30,   31,
+};
+
+static int tps6586x_iled_voltages[] = 
+ {
+	   0,    1,    2,    3,    4,    5,    6,    7,
+	   8,    9,   10,   11,   12,   13,   14,   15,
+};
+
+
+
 #define TPS6586X_REGULATOR(_id, vdata, _ops, vreg, shift, nbits,	\
 			   ereg0, ebit0, ereg1, ebit1, en_time)		\
 	.desc	= {							\
@@ -292,6 +312,11 @@ static struct tps6586x_regulator tps6586x_regulator[] = {
 	TPS6586X_LDO(LDO_8, ldo, SUPPLYV2, 5, 3, ENC, 6, END, 6, 15000),
 	TPS6586X_LDO(LDO_9, ldo, SUPPLYV6, 3, 3, ENE, 7, ENE, 7, 3000),
 	TPS6586X_LDO(LDO_RTC, ldo, SUPPLYV4, 3, 3, V4, 7, V4, 7, 0),
+	/* Regulator control for the Hannspad WiFi LED */	
+	TPS6586X_LDO(LDO_LEDB1, led, LEDB1, 0, 5, LEDG1, 7, LEDG1, 7, 0),	/* Hannspad WLAN LED (Green LED bit 7 = RGB LED enable*/
+	TPS6586X_LDO(LDO_ILED, iled, SUPPLYFLASH, 0, 4, FLASH, 4, FLASH, 4, 0),	/* voltage = flash period (0=1s, 14=8s, 15=always on)*/
+										/* enable bits may be used to maniplate flash on time*/
+
 	TPS6586X_LDO(SM_2, sm2, SUPPLYV2, 0, 5, ENC, 7, END, 7, 0),
 
 	TPS6586X_DVM(LDO_2, dvm, LDO2BV1, 0, 5, ENA, 3, ENB, 3, VCC2, 6, 3000),
@@ -419,7 +444,7 @@ static int __devinit tps6586x_regulator_probe(struct platform_device *pdev)
 	int id = pdev->id;
 	int err;
 
-	dev_dbg(&pdev->dev, "Probing reulator %d\n", id);
+	dev_dbg(&pdev->dev, "Probing regulator %d\n", id);
 
 	ri = find_regulator_info(id);
 	if (ri == NULL) {

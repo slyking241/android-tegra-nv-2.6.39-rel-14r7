@@ -342,7 +342,7 @@ CHECKFLAGS     := -D__linux__ -Dlinux -D__STDC__ -Dunix -D__unix__ \
 CFLAGS_MODULE   = -mfloat-abi=softfp -mfpu=vfpv3-d16 -mtune=cortex-a9 -march=armv7-a
 AFLAGS_MODULE   =
 LDFLAGS_MODULE  =
-CFLAGS_KERNEL	= -fforce-addr -ftree-vectorize -fbranch-target-load-optimize2 -mfloat-abi=softfp -mfpu=vfpv3-d16 -mtune=cortex-a9 -march=armv7-a
+CFLAGS_KERNEL	= -fforce-addr -ftree-vectorize -fbranch-target-load-optimize2 -mfloat-abi=softfp -mfpu=vfpv3-d16 -mtune=cortex-a9 -march=armv7-a -funswitch-loops
 AFLAGS_KERNEL	=
 CFLAGS_GCOV	= -fprofile-arcs -ftest-coverage
 

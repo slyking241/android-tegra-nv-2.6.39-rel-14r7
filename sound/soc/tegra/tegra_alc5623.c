@@ -301,24 +301,7 @@ static int tegra_alc5623_event_int_spk(struct snd_soc_dapm_widget *w,
 	return 0;
 }
 
-#if 0
-static int tegra_alc5623_event_hp(struct snd_soc_dapm_widget *w,
-					struct snd_kcontrol *k, int event)
-{
-        pr_info("%s++", __func__); 
-	struct snd_soc_dapm_context *dapm = w->dapm;
-	struct snd_soc_card *card = dapm->card;
-	struct snd_soc_codec *codec = dapm->codec;
-	struct tegra_alc5623 *machine = snd_soc_card_get_drvdata(card);
-	struct tegra_alc5623_platform_data *pdata = machine->pdata;
 
-	snd_soc_update_bits(codec, ALC5623_DAI_CONTROL,
-                        ALC5623_DAI_DAC_DATA_L_R_SWAP,
-                        (!!SND_SOC_DAPM_EVENT_ON(event))*ALC5623_DAI_DAC_DATA_L_R_SWAP);
-
-	return 0;
-}
-#endif 
 
 static int tegra_alc5623_event_int_mic(struct snd_soc_dapm_widget *w,
                                         struct snd_kcontrol *k, int event)
@@ -338,15 +321,15 @@ static int tegra_alc5623_event_int_mic(struct snd_soc_dapm_widget *w,
 
         if (!(machine->gpio_requested & GPIO_INT_MIC_EN))
                 return 0;
-// Enables the mic differntial control
-//        snd_soc_update_bits(codec, ALC5623_MIC_ROUTING_CTRL,
-//                        (1 << 12),
-//			    (!!SND_SOC_DAPM_EVENT_ON(event))*(1<<12));
+//	 Enables the mic differntial control
+	        snd_soc_update_bits(codec, ALC5623_MIC_ROUTING_CTRL,
+                    (1 << 12),
+		    (!!SND_SOC_DAPM_EVENT_ON(event))*(1<<12));
 
 // Mic Bias
-//  snd_soc_update_bits(codec, ALC5623_PWR_MANAG_ADD1,
-//      (1 << 11),
-//        (!!SND_SOC_DAPM_EVENT_ON(event))*(1<<11));
+  snd_soc_update_bits(codec, ALC5623_PWR_MANAG_ADD1,
+        (1 << 11),
+        (!!SND_SOC_DAPM_EVENT_ON(event))*(1<<11));
 
         gpio_set_value_cansleep(pdata->gpio_int_mic_en,
                                 SND_SOC_DAPM_EVENT_ON(event));
