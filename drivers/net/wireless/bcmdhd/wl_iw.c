@@ -24,6 +24,7 @@
  * $Id: wl_iw.c,v 1.132.2.18 2011-02-05 01:44:47 $
  */
 
+
 #include <wlioctl.h>
 
 #include <typedefs.h>
@@ -8286,7 +8287,6 @@ wl_iw_event(struct net_device *dev, wl_event_msg_t *e, void* data)
 		g_ss_cache_ctrl.m_link_down = 1;
 #endif 
 			WL_TRACE(("Link Down\n"));
-
 			bzero(wrqu.addr.sa_data, ETHER_ADDR_LEN);
 			bzero(&extra, ETHER_ADDR_LEN);
 		}
@@ -8312,7 +8312,6 @@ wl_iw_event(struct net_device *dev, wl_event_msg_t *e, void* data)
 #else
 #endif 
 			WL_TRACE(("Link UP\n"));
-
 		}
 		wrqu.addr.sa_family = ARPHRD_ETHER;
 		break;

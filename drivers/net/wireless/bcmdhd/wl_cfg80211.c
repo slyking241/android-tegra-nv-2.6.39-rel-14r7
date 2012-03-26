@@ -60,6 +60,8 @@
 #include <wl_cfg80211.h>
 #include <wl_cfgp2p.h>
 
+extern void set_wifi_led(int set); /* Hannspad WLAN LED control */
+
 static struct device *cfg80211_parent_dev = NULL;
 static int vsdb_supported = 0;
 struct wl_priv *wlcfg_drv_priv = NULL;
@@ -4658,6 +4660,7 @@ wl_notify_connect_status(struct wl_priv *wl, struct net_device *ndev,
 				cfg80211_ibss_joined(ndev, (s8 *)&e->addr,
 					GFP_KERNEL);
 				WL_DBG(("joined in IBSS network\n"));
+				set_wifi_led(1);
 			} else {
 				if (!wl_get_drv_status(wl, DISCONNECTING, ndev)) {
 					printk("wl_bss_connect_done succeeded\n");
@@ -4665,6 +4668,7 @@ wl_notify_connect_status(struct wl_priv *wl, struct net_device *ndev,
 					WL_DBG(("joined in BSS network \"%s\"\n",
 					((struct wlc_ssid *)
 					 wl_read_prof(wl, ndev, WL_PROF_SSID))->SSID));
+					set_wifi_led(1);
 				}
 			}
 
@@ -4680,6 +4684,7 @@ wl_notify_connect_status(struct wl_priv *wl, struct net_device *ndev,
 				scb_val_t scbval;
 				u8 *curbssid = wl_read_prof(wl, ndev, WL_PROF_BSSID);
 				printk("link down, call cfg80211_disconnected\n");
+				set_wifi_led(0);
 				wl_clr_drv_status(wl, CONNECTED, ndev);
 				/* To make sure disconnect, explictly send dissassoc
 				*  for BSSID 00:00:00:00:00:00 issue
@@ -4696,6 +4701,7 @@ wl_notify_connect_status(struct wl_priv *wl, struct net_device *ndev,
 			} else if (wl_get_drv_status(wl, CONNECTING, ndev)) {
 				printk("link down, during connecting\n");
 				wl_bss_connect_done(wl, ndev, e, data, false);
+				set_wifi_led(0);
 			}
 			wl_clr_drv_status(wl, DISCONNECTING, ndev);
 

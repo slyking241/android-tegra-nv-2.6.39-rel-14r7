@@ -17,15 +17,16 @@
 #include <linux/rwsem.h>
 #include <linux/timer.h>
 
+
 struct device;
 /*
  * LED Core
  */
 
 enum led_brightness {
-	LED_OFF		= 0,
-	LED_HALF	= 127,
-	LED_FULL	= 255,
+	LED_OFF		= 1,
+	LED_HALF	= 6,
+	LED_FULL	= 31,
 };
 
 struct led_classdev {

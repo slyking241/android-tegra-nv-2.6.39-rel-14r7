@@ -446,6 +446,12 @@ config LEDS_TRIGGER_DEFAULT_ON
 	  This allows LEDs to be initialised in the ON state.
 	  If unsure, say Y.
 
+config LEDS_TRIGGER_WIFI
+	tristate "LED WIFI Trigger"
+	depends on LEDS_TRIGGERS
+	help
+	  This allows to control the Hannspad Wifi LED.
+	  
 config LEDS_TRIGGER_SLEEP
 	tristate "LED Sleep Mode Trigger"
 	depends on LEDS_TRIGGERS && HAS_EARLYSUSPEND
