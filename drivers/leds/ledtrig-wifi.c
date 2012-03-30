@@ -22,7 +22,6 @@ static struct led_trigger wifi_led_trigger = {
 };
 static int last_state=0;
 
-
 void set_wifi_led(int set)
 {
 
@@ -35,8 +34,7 @@ void set_wifi_led(int set)
 static void wifi_trig_activate(struct led_classdev *led_cdev)
 {
 
-     led_trigger_event(&wifi_led_trigger,last_state?LED_FULL:LED_OFF);
-
+    led_trigger_event(&wifi_led_trigger,last_state?LED_FULL:LED_OFF);
 }
 
 

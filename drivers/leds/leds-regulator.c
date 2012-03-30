@@ -177,7 +177,7 @@ static int __devinit regulator_led_probe(struct platform_device *pdev)
 	led->cdev.name = pdata->name;
 	led->cdev.flags |= LED_CORE_SUSPENDRESUME;
 	led->vcc = vcc;
-	led->cdev.default_trigger = "wifi"; /* TODO read this from platform data */
+	led->cdev.default_trigger =pdata->default_trigger;
 	/* to handle correctly an already enabled regulator */
 	if (regulator_is_enabled(led->vcc))
 		led->enabled = 1;

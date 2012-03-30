@@ -41,6 +41,7 @@
 struct led_regulator_platform_data {
 	char *name;                     /* LED name as expected by LED class */
 	enum led_brightness brightness; /* initial brightness value */
+	char *default_trigger;
 };
 
 #endif /* __LINUX_LEDS_REGULATOR_H */

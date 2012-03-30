@@ -249,16 +249,15 @@ static int tps6586x_dvm_voltages[] = {
 };
 
 static int tps6586x_led_voltages[] = {
-	   1,    1,    2,    3,    4,    5,    6,    7, /*  Zero not allowed  */
-	   8,    9,   10,   11,   12,   13,   14,   15,
-	  16,   17,   18,   19  , 20,   21,   22,   23,
-	  24,   25,   26,   27,   28,   29,   30,   31,
+	   1,    2,    3,    4,    5,    6,    7,    8, /*  Zero not allowed  */
+	   9,   10,   11,   12,   13,   14,   15,   16,
+	  17,   18,   19,   20,   21,   22,   23,   24,
+	  25,   26,   27,   28,   29,   30,   31,   32, /* 32 = index 31 = max brightness */
 };
 
-static int tps6586x_iled_voltages[] = 
- {
-	   0,    1,    2,    3,    4,    5,    6,    7,
-	   8,    9,   10,   11,   12,   13,   14,   15,
+static int tps6586x_fled_voltages[] = {
+	   1,    2,    3,    4,    5,    6,    7,    8,
+	   9,   10,   11,   12,   13,   14,   15,   16, /* 16 = index 15 = flashing off */
 };
 
 
@@ -314,7 +313,7 @@ static struct tps6586x_regulator tps6586x_regulator[] = {
 	TPS6586X_LDO(LDO_RTC, ldo, SUPPLYV4, 3, 3, V4, 7, V4, 7, 0),
 	/* Regulator control for the Hannspad WiFi LED */	
 	TPS6586X_LDO(LDO_LEDB1, led, LEDB1, 0, 5, LEDG1, 7, LEDG1, 7, 0),	/* Hannspad WLAN LED (Green LED bit 7 = RGB LED enable*/
-	TPS6586X_LDO(LDO_ILED, iled, SUPPLYFLASH, 0, 4, FLASH, 4, FLASH, 4, 0),	/* voltage = flash period (0=1s, 14=8s, 15=always on)*/
+	TPS6586X_LDO(LDO_FLED, fled, SUPPLYFLASH, 0, 4, FLASH, 6, FLASH, 6, 0),	/* voltage = flash period (0=1s, 14=8s, 15=always on, but 16 used in voltage table !)*/
 										/* enable bits may be used to maniplate flash on time*/
 
 	TPS6586X_LDO(SM_2, sm2, SUPPLYV2, 0, 5, ENC, 7, END, 7, 0),

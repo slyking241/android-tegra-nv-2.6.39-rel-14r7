@@ -409,7 +409,7 @@ static struct clk tegra2_clk_twd = {
 		 atomic context which cannot take a mutex. */
 	.name     = "twd",
 	.ops      = &tegra2_twd_ops,
-	.max_rate = 1000000000,	/* Same as tegra_clk_virtual_cpu.max_rate */
+	.max_rate = 1200000000,	/* Same as tegra_clk_virtual_cpu.max_rate */
 	.mul      = 1,
 	.div      = 4,
 };
@@ -2670,8 +2670,8 @@ static struct cpufreq_frequency_table freq_table_1p0GHz[] = {
 	{ 3, 608000 },
 	{ 4, 760000 },
 	{ 5, 816000 },
-	{ 6, 1000000 },
-	{ 7, 1200000 },
+	{ 6, 912000 },
+	{ 7, 1000000 },
 	{ 8, CPUFREQ_TABLE_END },
 };
 

@@ -200,8 +200,8 @@ static struct regulator_consumer_supply tps658621_led_supply[] = {  /* Blue LED 
 	REGULATOR_SUPPLY("vled", "leds-regulator.0")
 };
 
-static struct regulator_consumer_supply tps658621_iled_supply[] = {  /* sets flash mode for Hannspad WLAN LED */
-	REGULATOR_SUPPLY("i_led", NULL)
+static struct regulator_consumer_supply tps658621_fled_supply[] = {  /* sets flash mode for Hannspad WLAN LED */
+	REGULATOR_SUPPLY("vled", "leds-regulator.1")
 };
 
 /* unused */
@@ -320,9 +320,9 @@ static struct regulator_init_data rtc_data
 //	= ADJ_REGULATOR_INIT(buck,1250, 3350, 0, 0); // 3300
 
 static struct regulator_init_data led_data 		 
-	= ADJ_REGULATOR_INIT(led, 1, 31, 0, 1);   // Hannspad WLAN LED brightness (PWM, 0-31)
-static struct regulator_init_data iled_data 		 
-	= ADJ_REGULATOR_INIT(iled, 15, 15, 1, 1);  // (ab)used for setting flashing period (15=always on)
+	= ADJ_REGULATOR_INIT(led, 1, 32, 0, 1);   // Hannspad WLAN LED brightness (PWM, 0-31)
+static struct regulator_init_data fled_data 		 
+	= ADJ_REGULATOR_INIT(fled, 1, 16, 1, 1);  // (ab)used for setting flashing period (15=always on)
 
 static struct regulator_init_data soc_data 		 
 	= ADJ_REGULATOR_INIT(soc, 1250, 3300, 1, 1);
@@ -368,7 +368,8 @@ static struct regulator_init_data vdd_aon_data =
 		.enabled_at_boot= _atboot,					\
 		.init_data		= &_data,					\
 	}
-		//.set_as_input_to_enable = _itoen,			\
+		/*.set_as_input_to_enable = _itoen,			\*/
+
 /* The next 3 are fixed regulators controlled by PMU GPIOs */
 static struct fixed_voltage_config ldo_tps74201_cfg  
 	= FIXED_REGULATOR_CONFIG(ldo_tps74201  , 1500, PMU_GPIO0 , 0,0, 200000, 0, ldo_tps74201_data);
@@ -407,8 +408,15 @@ static struct fixed_voltage_config ldo_tps2051B_cfg
 	} 	
 
 static struct led_regulator_platform_data wifi_led_data = {
-		.name = "wifi",
-		.brightness = LED_OFF
+		.name = "wifi::led",
+		.brightness = LED_OFF,
+		.default_trigger="wifi",
+};
+
+static struct led_regulator_platform_data blink_led_data = {
+		.name = "wifi::blink",
+		.brightness = LED_HALF, /* HALF = blink off */
+		.default_trigger="default-on",
 };
 
 
@@ -438,7 +446,7 @@ static struct tps6586x_subdev_info tps_devs[] = {
 	TPS_ADJ_REG(LDO_8, &ldo8_data),
 	TPS_ADJ_REG(LDO_9, &ldo9_data),
 	TPS_ADJ_REG(LDO_LEDB1, &led_data),
-	TPS_ADJ_REG(LDO_ILED, &iled_data),	
+	TPS_ADJ_REG(LDO_FLED, &fled_data),	
 	//TPS_ADJ_REG(LDO_RTC, &rtc_data),
 	//TPS_ADJ_REG(LDO_SOC, &soc_data),
 	//TPS_GPIO_FIX_REG(0, &ldo_tps74201_cfg),
@@ -710,11 +718,19 @@ struct platform_device tegra_rtc_device = {
 	.num_resources	= ARRAY_SIZE(tegra_rtc_resources),
 };
 
-struct platform_device regulator_led_device = {
+struct platform_device regulator_led_device = {		/* LED brightness control */
 	.name		= "leds-regulator",
 	.id		= 0,
 	.dev		= {
 			   .platform_data = &wifi_led_data,
+			  },
+};
+
+struct platform_device regulator_fled_device = {		/* LED flashing control */
+	.name		= "leds-regulator",
+	.id		= 1,
+	.dev		= {
+			   .platform_data = &blink_led_data,
 			  },
 };
 
@@ -733,6 +749,7 @@ static struct platform_device *smba1002_power_devices[] __initdata = {
 	&tegra_rtc_device,
 	//&smba1002_bq24610_device,
 	&regulator_led_device,
+	&regulator_fled_device,
 };
 
 /* Init power management unit of Tegra2 */

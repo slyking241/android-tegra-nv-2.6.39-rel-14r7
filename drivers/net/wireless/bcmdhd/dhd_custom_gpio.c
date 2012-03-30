@@ -23,6 +23,8 @@
 * $Id: dhd_custom_gpio.c,v 1.2.42.1 2010-10-19 00:41:09 Exp $
 */
 
+extern void set_wifi_led(int set); /* Hannspad WLAN LED control */
+
 #include <typedefs.h>
 #include <linuxver.h>
 #include <osl.h>
@@ -131,6 +133,7 @@ dhd_customer_gpio_wlan_ctrl(int onoff)
 #endif /* CUSTOMER_HW */
 #ifdef CUSTOMER_HW2
 			msleep(50);
+			set_wifi_led(0);
 			wifi_set_power(0, 0);
 #endif
 			WL_ERROR(("=========== WLAN placed in RESET ========\n"));

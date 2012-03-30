@@ -328,7 +328,7 @@ dhd_prot_ioctl(dhd_pub_t *dhd, int ifidx, wl_ioctl_t * ioc, void * buf, int len)
 		ioc->needed = ltoh32(msg->len); /* len == needed when set/query fails from dongle */
 	}
 
-	/* Intercept th  wme_dp ioctl here */
+	/* Intercept the wme_dp ioctl here */
 	if ((!ret) && (ioc->cmd == WLC_SET_VAR) && (!strcmp(buf, "wme_dp"))) {
 		int slen, val = 0;
 
