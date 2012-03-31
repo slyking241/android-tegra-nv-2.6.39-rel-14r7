@@ -35,6 +35,7 @@
 
 #ifdef CONFIG_MACH_SMBA1002
 #include "../../arch/arm/mach-tegra/board-smba1002.h"
+extern void set_wifi_led(int set); /* Hannspad WLAN LED control */
 #endif
 
 struct bcm4329_rfkill_data {
@@ -54,6 +55,7 @@ static int bcm4329_bt_rfkill_set_power(void *data, bool blocked)
 			return 0;
 #ifdef CONFIG_MACH_SMBA1002
 		smba1002_bt_wifi_gpio_set(0);
+		set_wifi_led(0);
 #else
 		if (bcm4329_rfkill->gpio_shutdown)
 			gpio_direction_output(bcm4329_rfkill->gpio_shutdown, 0);

@@ -175,7 +175,7 @@ static int __devinit regulator_led_probe(struct platform_device *pdev)
 
 	led->cdev.brightness_set = regulator_led_brightness_set;
 	led->cdev.name = pdata->name;
-	led->cdev.flags |= LED_CORE_SUSPENDRESUME;
+	//led->cdev.flags |= LED_CORE_SUSPENDRESUME;
 	led->vcc = vcc;
 	led->cdev.default_trigger =pdata->default_trigger;
 	/* to handle correctly an already enabled regulator */

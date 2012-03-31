@@ -43,6 +43,8 @@
 #include "board-smba1002.h"
 #include "gpio-names.h"
 
+extern void set_wifi_led(int set); /* Hannspad WLAN LED control */
+
 struct smba1002_pm_wlan_data {
 	struct regulator *regulator[2];
 	struct rfkill *rfkill;
@@ -84,7 +86,8 @@ static void __smba1002_pm_wlan_toggle_radio(struct device *dev, unsigned int on)
 		
 		gpio_set_value(SMBA1002_WLAN_RESET, 0); /* Assert reset */
 		gpio_set_value(SMBA1002_WLAN_POWER, 0); /* Powerdown */
-		
+		set_wifi_led(0);		
+
 		regulator_disable(wlan_data->regulator[1]);
 		regulator_disable(wlan_data->regulator[0]);
 		clk_disable(wlan_data->wifi_32k_clk);
