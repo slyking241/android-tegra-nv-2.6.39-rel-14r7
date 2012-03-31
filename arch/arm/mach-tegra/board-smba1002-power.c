@@ -422,7 +422,7 @@ static struct led_regulator_platform_data blink_led_data = {
 
 /* FIXME: do we have rtc alarm irq? */
 static struct tps6586x_rtc_platform_data smba1002_rtc_data = {
-	.irq	= TEGRA_NR_IRQS + TPS6586X_INT_RTC_ALM1,
+	.irq	= -1,
         .start = {
 		.year = 2011,
 		.month = 12,
