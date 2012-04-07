@@ -24,7 +24,6 @@
  * $Id: wl_iw.c,v 1.132.2.18 2011-02-05 01:44:47 $
  */
 
-
 #include <wlioctl.h>
 
 #include <typedefs.h>
@@ -163,11 +162,8 @@ uint wl_msg_level = WL_ERROR_VAL;
 #define htodchanspec(i) i
 #define dtohchanspec(i) i
 
-#ifdef CONFIG_WIRELESS_EXT
-
 extern struct iw_statistics *dhd_get_wireless_stats(struct net_device *dev);
 extern int dhd_wait_pend8021x(struct net_device *dev);
-#endif 
 
 #if WIRELESS_EXT < 19
 #define IW_IOCTL_IDX(cmd)	((cmd) - SIOCIWFIRST)
@@ -1123,7 +1119,7 @@ wl_iw_set_btcoex_dhcp(
 }
 
 static int
-wl_iw_set_suspend(
+wl_iw_set_suspend_opt(
 struct net_device *dev,
 struct iw_request_info *info,
 union iwreq_data *wrqu,
@@ -1134,22 +1130,47 @@ char *extra
 	int ret_now;
 	int ret = 0;
 
-	suspend_flag = *(extra + strlen(SETSUSPEND_CMD) + 1) - '0';
+	suspend_flag = *(extra + strlen(SETSUSPENDOPT_CMD) + 1) - '0';
 
 	if (suspend_flag != 0)
 		suspend_flag = 1;
 
 	ret_now = net_os_set_suspend_disable(dev, suspend_flag);
 
-	
 	if (ret_now != suspend_flag) {
-		if (!(ret = net_os_set_suspend(dev, ret_now)))
+		if (!(ret = net_os_set_suspend(dev, ret_now, 1)))
 			WL_ERROR(("%s: Suspend Flag %d -> %d\n",
 			          __FUNCTION__, ret_now, suspend_flag));
 		else
 			WL_ERROR(("%s: failed %d\n", __FUNCTION__, ret));
 	}
 
+	return ret;
+}
+
+static int
+wl_iw_set_suspend_mode(
+struct net_device *dev,
+struct iw_request_info *info,
+union iwreq_data *wrqu,
+char *extra
+)
+{
+	int ret = 0;
+
+#if !defined(CONFIG_HAS_EARLYSUSPEND) || !defined(DHD_USE_EARLYSUSPEND)
+	int suspend_flag;
+
+	suspend_flag = *(extra + strlen(SETSUSPENDMODE_CMD) + 1) - '0';
+
+	if (suspend_flag != 0)
+		suspend_flag = 1;
+
+	if (!(ret = net_os_set_suspend(dev, suspend_flag, 0)))
+		WL_ERROR(("%s: Suspend Mode %d\n",__FUNCTION__,suspend_flag));
+	else
+		WL_ERROR(("%s: failed %d\n", __FUNCTION__, ret));
+#endif
 	return ret;
 }
 
@@ -1684,7 +1705,7 @@ wl_iw_send_priv_event(
 	strcpy(extra, flag);
 	wrqu.data.length = strlen(extra);
 	wireless_send_event(dev, cmd, &wrqu, extra);
-	net_os_wake_lock_timeout_enable(dev, DHD_EVENT_TIMEOUT_MS);
+	net_os_wake_lock_ctrl_timeout_enable(dev, DHD_EVENT_TIMEOUT_MS);
 	WL_TRACE(("Send IWEVCUSTOM Event as %s\n", extra));
 
 	return 0;
@@ -7605,8 +7626,10 @@ wl_iw_set_priv(
 			ret = wl_iw_get_dtim_skip(dev, info, (union iwreq_data *)dwrq, extra);
 		else if (strnicmp(extra, DTIM_SKIP_SET_CMD, strlen(DTIM_SKIP_SET_CMD)) == 0)
 			ret = wl_iw_set_dtim_skip(dev, info, (union iwreq_data *)dwrq, extra);
-		else if (strnicmp(extra, SETSUSPEND_CMD, strlen(SETSUSPEND_CMD)) == 0)
-			ret = wl_iw_set_suspend(dev, info, (union iwreq_data *)dwrq, extra);
+		else if (strnicmp(extra, SETSUSPENDOPT_CMD, strlen(SETSUSPENDOPT_CMD)) == 0)
+			ret = wl_iw_set_suspend_opt(dev, info, (union iwreq_data *)dwrq, extra);
+		else if (strnicmp(extra, SETSUSPENDMODE_CMD, strlen(SETSUSPENDMODE_CMD)) == 0)
+			ret = wl_iw_set_suspend_mode(dev, info, (union iwreq_data *)dwrq, extra);
 		else if (strnicmp(extra, TXPOWER_SET_CMD, strlen(TXPOWER_SET_CMD)) == 0)
 			ret = wl_iw_set_txpower(dev, info, (union iwreq_data *)dwrq, extra);
 #if defined(PNO_SUPPORT)
@@ -8287,6 +8310,7 @@ wl_iw_event(struct net_device *dev, wl_event_msg_t *e, void* data)
 		g_ss_cache_ctrl.m_link_down = 1;
 #endif 
 			WL_TRACE(("Link Down\n"));
+
 			bzero(wrqu.addr.sa_data, ETHER_ADDR_LEN);
 			bzero(&extra, ETHER_ADDR_LEN);
 		}
@@ -8312,6 +8336,7 @@ wl_iw_event(struct net_device *dev, wl_event_msg_t *e, void* data)
 #else
 #endif 
 			WL_TRACE(("Link UP\n"));
+
 		}
 		wrqu.addr.sa_family = ARPHRD_ETHER;
 		break;
