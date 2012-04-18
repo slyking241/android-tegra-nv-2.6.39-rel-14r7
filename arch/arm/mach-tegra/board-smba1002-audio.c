@@ -43,7 +43,7 @@
 #include <mach/spdif.h>
 #include <mach/audio.h>  
 
-#include <mach/system.h>
+//#include <mach/system.h>
 
 #include "board.h"
 #include "board-smba1002.h"

@@ -69,7 +69,8 @@ static void smba1002_backlight_exit(struct device *dev)
 
 static int smba1002_backlight_notify(struct device *unused, int brightness)
 {
-	gpio_set_value(SMBA1002_EN_VDD_PANEL, !!brightness);	
+	
+	gpio_set_value(SMBA1002_EN_VDD_PANEL, !!brightness);
 	gpio_set_value(SMBA1002_LVDS_SHUTDOWN, !!brightness);
 	gpio_set_value(SMBA1002_BL_ENB, !!brightness);
 	return brightness;
@@ -128,6 +129,7 @@ static int smba1002_hdmi_enable(void)
 	smba1002_hdmi_reg = regulator_get(NULL, "avdd_hdmi");
 	if (IS_ERR_OR_NULL(smba1002_hdmi_reg)) {
 //		gpio_set_value(SMBA1002_HDMI_ENB, 0);
+		smba1002_hdmi_reg = NULL;
 		return PTR_ERR(smba1002_hdmi_reg);
 	}
 
@@ -171,7 +173,7 @@ static int smba1002_hdmi_disable(void)
 
 static struct tegra_dc_mode smba1002_panel_modes[] = {
 	{
-		.pclk = 68419300,    //42430000
+		.pclk = 61714285, //42430000 61714285 65755107 72397037
 		.h_ref_to_sync = 4,
 		.v_ref_to_sync = 2,
 		.h_sync_width = 136,
@@ -226,7 +228,7 @@ static struct tegra_dc_out smba1002_disp1_out = {
         /* Enable dithering. Tegra also supports error
                diffusion, but when the active region is less
                than 640 pixels wide. */
-    .dither         = TEGRA_DC_ORDERED_DITHER,
+    .dither      = TEGRA_DC_ORDERED_DITHER,
 	.height 	= 136, /* mm */
 	.width 		= 217, /* mm */
 	
@@ -407,11 +409,11 @@ static void smba1002_panel_early_suspend(struct early_suspend *h)
 static void smba1002_panel_late_resume(struct early_suspend *h)
 {
         unsigned i;
+        for (i = 0; i < num_registered_fb; i++)
+                fb_blank(registered_fb[i], FB_BLANK_UNBLANK);
 #ifdef CONFIG_TEGRA_CONVSERVATIVE_GOV_ON_EARLYSUPSEND
         cpufreq_restore_default_governor();
 #endif
-        for (i = 0; i < num_registered_fb; i++)
-                fb_blank(registered_fb[i], FB_BLANK_UNBLANK);
 }
 #endif 
 

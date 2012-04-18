@@ -200,6 +200,8 @@ static int tegra_rtc_set_time(struct device *dev, struct rtc_time *tm)
 		if (rtcbak != NULL) {
 			if (rtc_set_time(rtcbak,tm) < 0) {
 				dev_err(dev,"Unable to set date to backup RTC '%s'\n",CONFIG_RTC_TEGRA2_BACKUP_RTC_DEV);
+			} else {
+			dev_vdbg(dev,"Tegra synced to backup RTC '%s'\n",CONFIG_RTC_TEGRA2_BACKUP_RTC_DEV);
 			}
 			rtc_class_close(rtcbak);
 		} else {
@@ -406,6 +408,7 @@ static int __devinit tegra_rtc_probe(struct platform_device *pdev)
 				/* We got the time from the auxiliary RTC - Store it into Tegra2 RTC */
 				tegra_rtc_set_time(&pdev->dev,&tm);
 				info->rtc_set = true;
+				dev_vdbg(&pdev->dev,"Tegra: set time from backup RTC '%s' done\n",CONFIG_RTC_TEGRA2_BACKUP_RTC_DEV);
 			} else {
 				dev_err(&pdev->dev,"Unable to read date from backup RTC '%s'\n",CONFIG_RTC_TEGRA2_BACKUP_RTC_DEV);
 			}

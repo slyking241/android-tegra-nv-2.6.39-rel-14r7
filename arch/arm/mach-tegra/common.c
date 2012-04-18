@@ -28,7 +28,6 @@
 #include <linux/memblock.h>
 #include <linux/bitops.h>
 #include <linux/sched.h>
-
 #include <asm/hardware/cache-l2x0.h>
 #include <asm/system.h>
 
@@ -100,6 +99,7 @@ static int board_panel_type;
 static enum power_supply_type pow_supply_type = POWER_SUPPLY_TYPE_MAINS;
 
 void (*arch_reset)(char mode, const char *cmd) = tegra_assert_system_reset;
+
 
 #define NEVER_RESET 0
 

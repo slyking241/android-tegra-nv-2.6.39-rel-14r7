@@ -78,11 +78,38 @@ static __initdata struct tegra_clk_init_table smba1002_clk_init_table[] = {
 { "uartc", "pll_p", 216000000, false}, /* tegra_uart.2 uart.0 */
 { "clk_d", "clk_m", 24000000, true},
 
+	{ "sclk",		"pll_p_out2",	0,	true},		/* must be always on */
+    { "avp.sclk",   	NULL,		0,  false},         /* must be always on */
+    { "cop",    "sclk",             0,  false},         /* must be always on */
+	{ "hclk",		"sclk",			0,	true},		/* must be always on */
+	{ "pclk",		"hclk",			0,	true},		/* must be always on */
 
+	/* pll_s generates the master clock */
+	{ "pll_s",		"clk_32k",		 0,	true},		/* must be always on */
+	{ "pll_p",		"clk_m",		0,	true},		/* must be always on */
+	{ "pll_p_out1", "pll_p", 28800000, true}, /* must be always on - audio clocks ...*/
+    { "pll_p_out2", "pll_p", 		0, true}, /* must be always on - usb perhaps ? unused ?*/
+	{ "pll_p_out3",	"pll_p",		0,	true},		/* must be always on - i2c, camera */
+	{ "pll_p_out4",	"pll_p",		0,	true},		/* must be always on - USB ulpi */
+	{ "pll_m_out1",	"pll_m",		0,	true},		/* always on - unused ?*/
+	{ "emc",		"pll_m",		0,	true},		/* always on */
+	{ "pll_c",		"clk_m",		0,	true},		/* always on - graphics and camera clocks */
+    { "pll_c_out1", "pll_c", 		0,  true}, /* must be always on - system clock */
 
-
-
-{ "pll_p_out1", "pll_p", 28800000, true}, /* must be always on - audio clocks ...*/
+        /* pll_x */
+    { "pll_x", "clk_m",				0, true}, /* */
+    { "cclk", "pll_x",				0, true},
+    { "cpu", "cclk", 				0, true},
+	{ "csite",		"pll_p",		0 ,	true},		/* csite - coresite */ /* always on */
+	{ "timer",		"clk_m",		0,	true},		/* timer */ /* always on - no init req */
+    { "kfuse",      "clk_m",    	0,  true}, /* kfuse-tegra */ /* always on - no init req */
+	{ "3d",     	"pll_c",    	0,  false},		/* tegra_grhost, gr3d */
+	{ "2d",     	"pll_c",    	0,  false},		/* tegra_grhost, gr2d */
+	{ "epp",    	"pll_c",    	0, 	false}, 	/* tegra_grhost */	
+    { "mpe", 	"pll_c", 		0,  false}, /* tegra_grhost */
+	{ "host1x",	"pll_p",		0,  false},		/* tegra_grhost */
+	{ "vi",     	"pll_c",   	 0,  false},		/* tegra_camera */
+	{ "stat_mon",   "clk_m",		 0, true}, /*enabled by bootloader*/	
 
 
 /* pll_a and pll_a_out0 are clock sources for audio interfaces */

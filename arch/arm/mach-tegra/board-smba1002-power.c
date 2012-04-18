@@ -410,7 +410,7 @@ static struct fixed_voltage_config ldo_tps2051B_cfg
 static struct led_regulator_platform_data wifi_led_data = {
 		.name = "wifi::led",
 		.brightness = LED_OFF,
-		.default_trigger="wifi",
+		.default_trigger="mmc1",
 };
 
 static struct led_regulator_platform_data blink_led_data = {
