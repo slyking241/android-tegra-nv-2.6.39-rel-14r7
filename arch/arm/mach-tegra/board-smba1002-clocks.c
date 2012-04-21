@@ -103,7 +103,7 @@ static __initdata struct tegra_clk_init_table smba1002_clk_init_table[] = {
 	{ "csite",		"pll_p",		0 ,	true},		/* csite - coresite */ /* always on */
 	{ "timer",		"clk_m",		0,	true},		/* timer */ /* always on - no init req */
     { "kfuse",      "clk_m",    	0,  true}, /* kfuse-tegra */ /* always on - no init req */
-	{ "3d",     	"pll_c",    	0,  false},		/* tegra_grhost, gr3d */
+	{ "3d",     	"pll_m",    	0,  false},		/* tegra_grhost, gr3d */
 	{ "2d",     	"pll_c",    	0,  false},		/* tegra_grhost, gr2d */
 	{ "epp",    	"pll_c",    	0, 	false}, 	/* tegra_grhost */	
     { "mpe", 	"pll_c", 		0,  false}, /* tegra_grhost */
