@@ -353,8 +353,8 @@ static const struct snd_soc_dapm_route audio_map[] = {
 	{"Headphone Jack", NULL, "HPR"},
 	{"Int Spk", NULL, "AUXOUTL"},
 	{"Int Spk", NULL, "AUXOUTR"},	
-	{"Mic Bias1", NULL, "Int Mic"},
-	{"MIC1", NULL, "Mic Bias1"},
+	{"Right ADC", NULL, "Int Mic"},
+	{"Left ADC", NULL, "Int Mic"},
 	{"AUXINR", NULL, "FM Radio"},
 	{"AUXINL", NULL, "FM Radio"},
 };

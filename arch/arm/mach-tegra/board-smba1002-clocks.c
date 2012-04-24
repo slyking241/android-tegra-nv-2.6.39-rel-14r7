@@ -97,20 +97,35 @@ static __initdata struct tegra_clk_init_table smba1002_clk_init_table[] = {
     { "pll_c_out1", "pll_c", 		0,  true}, /* must be always on - system clock */
 
         /* pll_x */
-    { "pll_x", "clk_m",				0, true}, /* */
-    { "cclk", "pll_x",				0, true},
-    { "cpu", "cclk", 				0, true},
+    { "pll_x", 		"clk_m",				0, true}, /* */
+    { "cclk", 		"pll_x",				0, true},
+    { "cpu", 		"cclk", 				0, true},
 	{ "csite",		"pll_p",		0 ,	true},		/* csite - coresite */ /* always on */
 	{ "timer",		"clk_m",		0,	true},		/* timer */ /* always on - no init req */
     { "kfuse",      "clk_m",    	0,  true}, /* kfuse-tegra */ /* always on - no init req */
 	{ "3d",     	"pll_m",    	0,  false},		/* tegra_grhost, gr3d */
-	{ "2d",     	"pll_c",    	0,  false},		/* tegra_grhost, gr2d */
+	{ "2d",     	"pll_m",    	0,  false},		/* tegra_grhost, gr2d */
 	{ "epp",    	"pll_c",    	0, 	false}, 	/* tegra_grhost */	
-    { "mpe", 	"pll_c", 		0,  false}, /* tegra_grhost */
-	{ "host1x",	"pll_p",		0,  false},		/* tegra_grhost */
+    { "mpe", 		"pll_c", 		0,  false}, /* tegra_grhost */
+	{ "host1x",		"pll_p",		0,  false},		/* tegra_grhost */
 	{ "vi",     	"pll_c",   	 0,  false},		/* tegra_camera */
 	{ "stat_mon",   "clk_m",		 0, true}, /*enabled by bootloader*/	
-
+	{ "disp1",  	"pll_p",    	0, 	false},		/* tegradc.0 */
+	{ "disp2",  	"pll_p",    	0, 	false},		/* tegradc.1 */	
+	{ "dsia",		"pll_d_out0",	 0,	false},
+	{ "vfir",		"clk_m",		 0,	false},
+	{ "apbdma",		"pclk",		0,	true}, 	/* tegra-dma */
+	{ "ndflash",	"pll_p",		0,	true},
+	{ "sbc1",		"clk_m",		 0,	false}, 	/* tegra_spi_slave.0 */
+	{ "sbc2",		"clk_m",		 0,	false}, 	/* tegra_spi_slave.1 */
+	{ "sbc3",		"clk_m",		 0,	false}, 	/* tegra_spi_slave.2 */
+	{ "sbc4",		"clk_m",		 0,	false}, 	/* tegra_spi_slave.3 */
+	{ "spi",		"clk_m",		 0,	false},
+	{ "xio",		"clk_m",		 0,	false},
+	{ "twc",		"clk_m",		 0,	false},
+	{ "hdmi",		"clk_m",		 0,	false},		/* tegra_dc.0, tegra_dc.1 */
+	{ "la",			"clk_m",		 0,	false},
+	{ "bsev",		"clk_m",		 0,	false},		/* tegra_aes */	
 
 /* pll_a and pll_a_out0 are clock sources for audio interfaces */
 #ifdef ALC5623_IS_MASTER
