@@ -164,7 +164,8 @@ static void __iomem *misc_gp_hidrev_base = IO_ADDRESS(TEGRA_APB_MISC_BASE);
 
 #define MISC_GP_HIDREV			0x804
 
-#define MAX_FREQ   1400000000
+#define MAX_FREQ   1200000000
+#define OC_LIMIT   1400000000
 
 static int tegra2_clk_shared_bus_update(struct clk *bus);
 
@@ -1935,13 +1936,13 @@ static struct clk tegra_pll_u = {
 
 static struct clk_pll_freq_table tegra_pll_x_freq_table[] = {
   
-  	/* 1.504 GHz */
+  	/* 1.5 GHz */
 	{ 12000000, 1504000000, 752, 6, 1, 12},
 	{ 13000000, 1504000000, 926, 8, 1, 12},
 	{ 19200000, 1504000000, 940, 12, 1, 8},
 	{ 26000000, 1504000000, 752, 13, 1, 12},
 	
-  	/* 1.408 GHz */
+  	/* 1.4 GHz */
 	{ 12000000, 1400000000, 704, 6, 1, 12},
 	{ 13000000, 1400000000, 969, 9, 1, 12},
 	{ 19200000, 1400000000, 875, 12, 1, 8},
@@ -2582,9 +2583,9 @@ static struct tegra_sku_rate_limit sku_limits[] =
 	RATE_LIMIT("cclk",	750000000, 0x07, 0x10),
 	RATE_LIMIT("pll_x",	750000000, 0x07, 0x10),
 
-	RATE_LIMIT("cpu",	MAX_FREQ , 0x04, 0x08, 0x0F),
-	RATE_LIMIT("cclk",	MAX_FREQ , 0x04, 0x08, 0x0F),
-	RATE_LIMIT("pll_x",	MAX_FREQ , 0x04, 0x08, 0x0F),
+	RATE_LIMIT("cpu",	OC_LIMIT , 0x04, 0x08, 0x0F),
+	RATE_LIMIT("cclk",	OC_LIMIT , 0x04, 0x08, 0x0F),
+	RATE_LIMIT("pll_x",	OC_LIMIT , 0x04, 0x08, 0x0F),
 
 	RATE_LIMIT("cpu",	1200000000, 0x14, 0x17, 0x18, 0x1B, 0x1C),
 	RATE_LIMIT("cclk",	1200000000, 0x14, 0x17, 0x18, 0x1B, 0x1C),
